@@ -1,0 +1,43 @@
+esphome:
+  name: waterflow
+  friendly_name: waterflow
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "***********************************"
+
+# Enable OTA updates
+ota:
+  password: "***********************"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Waterflow"
+    password: "*********"
+
+captive_portal:
+    
+sensor:
+  - platform: pulse_meter
+    name: 'Water Flow '
+    id: sensor_pulse_meter # Optional ID, necessary if you want to calculate the total number of pulses.
+    unit_of_measurement: 'L/m'
+    state_class: measurement
+    accuracy_decimals: 2
+    pin: GPIO8
+    filters:
+      - multiply: 0.0004386 # 2280 pulses per liter of water
+      - throttle_average: 10s
